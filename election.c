@@ -10,6 +10,7 @@ struct Electeur {
 struct Voteur {
 	char CIN[20];
 	char Nom[20];
+	int Voter;
 };
 
 struct Electeur CreateElecteur(char *nom, int NbVotes);
@@ -21,7 +22,7 @@ int ElecteurCount = 0;
 struct Voteur ListVoteur[100];
 int VoteurCount = 0;
 
-char MenuItems[100][100];
+char MenuItems[10][100];
 int MenuItemCount = 0, MenuLevel = 2;
 
 
@@ -87,7 +88,7 @@ void GenrateElecteurData(struct Electeur *ListElecteur, int limit) {
 	
 	struct Electeur e;
 	
-	e = CreateElecteur("dsadad", 11);
+	e = CreateElecteur("dsadad", 0);
 
 	for (i = 0; i < limit; i++) {
 		ListElecteur[i] = e;
@@ -148,7 +149,7 @@ struct Voteur CreateVoteur(char *CIN, char *nom) {
 	
 	strcpy(v.CIN, CIN);
 	strcpy(v.Nom, nom);
-	
+	v.Voter = 0;	
 	return v;
 }
 
@@ -240,14 +241,13 @@ void SingleElecteurMenuActions() {
 	PrintMenu();
 	
 	int UserInput = GetUserInput();
-}
-
-void SingleVoteurMenuActions() {
-	Reset();
-	CreateSingleMenuActions();
-	PrintMenu();
 	
-	int UserInput = GetUserInput();
+	switch (UserInput) {
+		case 1: {
+			
+			break;
+		}
+	}
 }
 
 void ListElecteurMenuActions() {
@@ -257,19 +257,6 @@ void ListElecteurMenuActions() {
 	int UserInput = GetUserInput();
 }
 
-void ListVoteurMenuActions() {
-	
-	PrintVoteurs(ListVoteur, VoteurCount);
-	int UserInput = GetUserInput();
-	
-	if (UserInput > VoteurCount || UserInput < 0) return;
-	
-	Reset();
-	PrintVoteur(ListVoteur[UserInput - 1], UserInput - 1);
-	CreateSingleMenuActions();
-	PrintMenu();
-
-}
 
 void ElecteurMenuActions() {
 		
@@ -307,6 +294,46 @@ void ElecteurMenuActions() {
 	}
 }
 
+/********** End Electeur ***********/
+
+/********** Start Voteur ***********/
+void SingleVoteurMenuActions(int VIndex) {
+	
+	int UserInput = GetUserInput();
+	
+	switch (UserInput) {
+		case 1: {
+			if (ListVoteur[VIndex].Voter == 1) return;
+			
+			Reset();
+			PrintElecteurs(ListElecteur, ElecteurCount);
+			int UserInput = GetUserInput();
+			
+			ListElecteur[UserInput - 1].NbVotes++;
+			ListVoteur[VIndex].Voter = 1;
+			
+			Reset();
+			PrintElecteurs(ListElecteur, ElecteurCount);
+			
+			break;
+		}
+	}
+}
+
+void ListVoteurMenuActions() {
+	
+	PrintVoteurs(ListVoteur, VoteurCount);
+	int UserInput = GetUserInput();
+	
+	if (UserInput > VoteurCount || UserInput < 0) return;
+	
+	Reset();
+	PrintVoteur(ListVoteur[UserInput - 1], UserInput - 1);
+	CreateSingleMenuActions();
+	PrintMenu();
+	SingleVoteurMenuActions(UserInput - 1);
+}
+
 void VoteurMenuActions() {
 		
 	CreateVoteurMenu();
@@ -322,7 +349,8 @@ void VoteurMenuActions() {
 			
 			printf("Entrer le CIN: ");
 			scanf("%s", &v.CIN);
-			
+			v.Voter = 0;
+						
 			printf("Entrer le Nom: ");
 			scanf("%s", &v.Nom);
 			AddVoteur(v);
@@ -357,7 +385,9 @@ void VoteurMenuActions() {
 	}
 	
 }
+/********** End Voteur ***********/
 
+// Main Menu
 void MainMenuActions() {
 	
 	int UserInput;
