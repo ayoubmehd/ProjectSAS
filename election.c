@@ -235,26 +235,40 @@ void CreateSingleMenuActions() {
  *											*
  ********************************************
 */
-void SingleElecteurMenuActions() {
-	Reset();
-	CreateSingleMenuActions();
-	PrintMenu();
+void SingleElecteurMenuActions(int EIndex) {
 	
 	int UserInput = GetUserInput();
 	
 	switch (UserInput) {
 		case 1: {
 			
+			Reset();
+			PrintVoteurs(ListVoteur, VoteurCount);
+			int UserInput = GetUserInput();
+			
+			ListVoteur[UserInput - 1].Voter = 1;
+			ListElecteur[EIndex].NbVotes++;
+			
+			Reset();
+			PrintElecteurs(ListElecteur, ElecteurCount);
 			break;
 		}
 	}
 }
 
 void ListElecteurMenuActions() {
-		
 	
 	PrintElecteurs(ListElecteur, ElecteurCount);
 	int UserInput = GetUserInput();
+	
+	if (UserInput > ElecteurCount || UserInput <= 0) return;
+	
+	Reset();
+	PrintElecteur(ListElecteur[UserInput - 1], UserInput - 1);
+	CreateSingleMenuActions();
+	PrintMenu();
+	SingleElecteurMenuActions(UserInput - 1);
+	
 }
 
 
@@ -268,10 +282,23 @@ void ElecteurMenuActions() {
 	switch(UserInput) {
 		case 1:{
 			// Action 1
+			
+			struct Electeur e;
+			
+			printf("Entrer le Nom: ");
+			scanf("%s", &e.Nom);
+			e.NbVotes = 0;
+						
+			AddElecteur(e);
+			Reset();
+			PrintElecteur(e, 0);
+			ElecteurMenuActions();
 			break;
 		}
 		case 2:{
 			// Action 2
+			Reset();
+			ListElecteurMenuActions();
 			break;
 		}
 		case 3: {
@@ -325,7 +352,7 @@ void ListVoteurMenuActions() {
 	PrintVoteurs(ListVoteur, VoteurCount);
 	int UserInput = GetUserInput();
 	
-	if (UserInput > VoteurCount || UserInput < 0) return;
+	if (UserInput > VoteurCount || UserInput <= 0) return;
 	
 	Reset();
 	PrintVoteur(ListVoteur[UserInput - 1], UserInput - 1);
