@@ -277,8 +277,6 @@ void RoundOne() {
 		printf("Nombre des presidents ou votuers pas suffisant\n");
 		
 		MainMenuActions();
-		
-		return;
 			
 	}
 	
@@ -322,6 +320,14 @@ void RoundOne() {
 }
 
 void RoundTow() {
+	
+	if (VoteurCount < 10) {
+		
+		printf("Nombre des presidents ou votuers pas suffisant\n");
+		
+		MainMenuActions();
+		
+	}
 	
 	struct President PresidentQualifier[PresidentCount];
 	
@@ -715,8 +721,10 @@ void VoteurMenuActions() {
 // Main Menu
 void MainMenuActions() {
 	
-	printf("this is Round %d\n", Round);
-	
+	printf("La tour %d\n", Round);
+	printf("voteur %d\npresident %d\n", VoteurCount, PresidentCount);
+	printf("Nombre totale des votes %d\n", TotalVoteCount);
+
 	int UserInput;
 		
 	MenuLevel = 1;
@@ -761,9 +769,8 @@ void MainMenuActions() {
 
 int main() {
 	
-	GenerateData(ListPresident, ListVoteur);
+//	GenerateData(ListPresident, ListVoteur);
 
-	printf("voteur %d  -  president %d\n", VoteurCount, PresidentCount);
 
 	MainMenuActions();
 
