@@ -163,6 +163,7 @@ void CheckPresidentExAequo() {
 	for (i = 1; i < PresidentCount; i++) {
 		if (VoteValue != ListPresident[i].NbVotes) {
 			NbVoteExAequo = 1;
+			break;
 		}
 	}
 	
