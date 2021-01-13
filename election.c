@@ -1,3 +1,4 @@
+
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -16,6 +17,8 @@ struct Voteur {
 struct President CreatePresident(char *nom, int NbVotes);
 struct Voteur CreateVoteur(char *CIN, char *nom);
 void MainMenuActions();
+void AddPresident(struct President e);
+//struct President *FirstRound();
 //struct President *CalculateResult(int Round);
 
 struct President ListPresident[100];
@@ -86,17 +89,31 @@ void PrintVoteurs(struct Voteur *ListVoteur,int size) {
 	
 }
 
-void GenratePresidentData(struct President *ListPresident, int limit) {
+void ResetVoteurs() {
 	
 	int i;
 	
-	struct President e;
-	
-	e = CreatePresident("dsadad", 0);
-
-	for (i = 0; i < limit; i++) {
-		ListPresident[i] = e;
+	for (i = 0; i < VoteurCount; i++) {
+		
+		PrintVoteur(ListVoteur[i], i);
+		ListVoteur[i].Voter = 0;
 	}
+	
+}
+
+void GenratePresidentData(struct President *ListPresident, int limit) {
+	
+	
+	AddPresident(CreatePresident("ASF", 20));
+	AddPresident(CreatePresident("WORk", 20));
+	AddPresident(CreatePresident("By", 40));
+	AddPresident(CreatePresident("Zeus", 60));
+	AddPresident(CreatePresident("Celemon", 15));
+	AddPresident(CreatePresident("Kar", 10));
+	AddPresident(CreatePresident("dsadad", 15));
+	AddPresident(CreatePresident("dsadad", 10));
+	
+	TotalVoteCount = 200;
 	
 }
 
@@ -117,7 +134,7 @@ void GenrateVoteurData(struct Voteur *ListVoteur, int limit) {
 void GenerateData(struct President *ListPresident, struct Voteur *ListVoteur) {
 	
 	
-	PresidentCount = 7;
+	PresidentCount = 0;
 	VoteurCount = 8;
 	
 	GenratePresidentData(ListPresident, PresidentCount);
@@ -172,6 +189,12 @@ void AddVoteur(struct Voteur v) {
 	VoteurCount++;
 }
 
+/**********************************
+ *
+ *		Menu
+ *
+ **********************************
+*/
 void CreateMenuItem(char *text) {
 	
 	strcpy(MenuItems[MenuItemCount], text);
@@ -210,35 +233,116 @@ void Vote(int VoteurIndex, int PresidentIndex) {
 	
 }
 
-void FirstRound() {
+void RoundOne() {
 	
-	int i;
+	struct President PresidentQualifier[PresidentCount];
+	
+	int i, PresidentQualifierCount = 0;
 	float Perc;
 	
-   	printf("HELL %d\n", TotalVoteCount);
 	for (i = 0; i < PresidentCount; i++) {
 		if (TotalVoteCount != 0) {
-		    Perc =  (float)((float)ListPresident[i].NbVotes / TotalVoteCount) * 100;			
+		    Perc =  ListPresident[i].NbVotes * 100 / TotalVoteCount;			
 		}
 		
-		if (Perc < 15) {
 		
-			printf("%.2f %d - %s exclu\n", Perc, i + 1, ListPresident[i].Nom);
-			DeletePresident(i);
+		if (Perc >= 15) {
+	
+			strcpy(PresidentQualifier[PresidentQualifierCount].Nom, ListPresident[i].Nom);
+			PresidentQualifier[PresidentQualifierCount].NbVotes = 0;
+
+			PresidentQualifierCount++;
 		}
-		printf("%.2f %d - %s Qualified\n", Perc, i + 1, ListPresident[i].Nom);
+		
 	}
-//	float Result = 
+	
+	PresidentCount = PresidentQualifierCount;
+	memcpy(ListPresident, PresidentQualifier, sizeof PresidentQualifier);
+	
+	ResetVoteurs();
+	
+}
+
+void RoundTow() {
+	
+	struct President PresidentQualifier[PresidentCount];
+	
+	int min = ListPresident[0].NbVotes, i, PresidentQualifierCount = 0;
+	
+//	PrintPresidents(ListPresident, PresidentCount);
+	
+	for (i = 1; i < PresidentCount; i++) {
+		if (ListPresident[i].NbVotes < min) {
+			min = ListPresident[i].NbVotes;
+		}		
+	}
+	
+	for (i = 0; i < PresidentCount; i++) {
+		if (ListPresident[i].NbVotes > min) {
+			strcpy(PresidentQualifier[PresidentQualifierCount].Nom, ListPresident[i].Nom);
+			PresidentQualifier[PresidentQualifierCount].NbVotes = 0;
+			
+			PresidentQualifierCount++;
+		}		
+	}
+	
+	
+    	
+	PresidentCount = PresidentQualifierCount;
+	memcpy(ListPresident, PresidentQualifier, sizeof PresidentQualifier);
+	
+//	PrintPresidents(PresidentQualifier, PresidentQualifierCount);
+	
+	printf("%d", min);
+	
+}
+
+void RoundThree() {
+	
+	int min = ListPresident[0].NbVotes, i;
+	
+	int MaxIndex = 0;
+	
+	for (i = 1; i < PresidentCount; i++) {
+		
+	}
 	
 }
 
 void CalculateResult(int Round) {
     if (Round == 1) {
-    	FirstRound();
+    	RoundOne();
+    	
+    	printf("***************************\n\n\n");
+    	
+    	PrintPresidents(ListPresident, PresidentCount);
+    
+		Round++;
+			
+		int UserInput = GetUserInput();
+		switch(UserInput) {
+			case 0: {
+				printf("Bey\n");
+				break;
+			}
+			case -1: {
+				
+				Reset();
+				MainMenuActions();
+				break;
+			}
+		}
 	} else if (Round == 2) {
-//	    SecondRound();
+		RoundTow();
+		
+		printf("***************************\n\n\n");
+	
+		PrintPresidents(ListPresident, PresidentCount);
+	
 	} else {
-//		FinalRound();
+		
+		RoundThree();
+		
 	}
 }
 
@@ -521,8 +625,6 @@ void MainMenuActions() {
 	
 	UserInput = GetUserInput();
 	
-//	printf("%d", UserInput);
-	
 	switch(UserInput) {
 		case 1:{
 			// Action 1
@@ -539,7 +641,7 @@ void MainMenuActions() {
 		case 3: {
 			// Action 3
 			Reset();
-			CalculateResult(1);
+			CalculateResult(2);
 			break;
 		}
 		case 0: {
