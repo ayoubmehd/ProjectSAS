@@ -304,8 +304,12 @@ void RoundThree() {
 	int MaxIndex = 0;
 	
 	for (i = 1; i < PresidentCount; i++) {
-		
+		if (ListPresident[i].NbVotes > ListPresident[MaxIndex].NbVotes) {
+			MaxIndex = i;
+		}
 	}
+	
+	PrintPresident(ListPresident[MaxIndex], MaxIndex);
 	
 }
 
@@ -641,7 +645,7 @@ void MainMenuActions() {
 		case 3: {
 			// Action 3
 			Reset();
-			CalculateResult(2);
+			CalculateResult(3);
 			break;
 		}
 		case 0: {
