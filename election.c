@@ -482,8 +482,8 @@ void CreateVoteurMenu() {
 void CreateSingleMenuActions() {
 	
 	CreateMenuItem("Voter");
-	CreateMenuItem("Modifier");
-	CreateMenuItem("Supprimer");
+//	CreateMenuItem("Modifier");
+//	CreateMenuItem("Supprimer");
 	
 }
 
@@ -721,9 +721,9 @@ void VoteurMenuActions() {
 // Main Menu
 void MainMenuActions() {
 	
-	printf("La tour %d\n", Round);
-	printf("voteur %d\npresident %d\n", VoteurCount, PresidentCount);
-	printf("Nombre totale des votes %d\n", TotalVoteCount);
+	printf("La tour: %d\t", Round);
+	printf("voteur: %d\tpresident: %d\t", VoteurCount, PresidentCount);
+	printf("Nombre totale des votes: %d\n\n", TotalVoteCount);
 
 	int UserInput;
 		
